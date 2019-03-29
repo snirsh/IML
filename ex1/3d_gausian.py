@@ -89,9 +89,16 @@ def q_27():
     plt.savefig('q27.png')
 
 
+def concentration_inequalities():
+    data = np.random.binomial(1, 0.25, (100000, 1000))
+    epsilon = np.array([0.5, 0.25, 0.1, 0.01, 0.001])
+    firs_five_rows = data[0, :5]
+
+
 if __name__ == '__main__':
     q_23()
     q_24()
     q_25()
     q_26()
     q_27()
+    # concentration_inequalities()
