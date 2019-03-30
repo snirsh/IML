@@ -93,14 +93,18 @@ def q_27():
 
 def q_29_a():
     means = np.mean(data[:5, :], axis=1).T
-    plt.rc('axes', prop_cycle=(cycler.cycler('color', ['r', 'g', 'b', 'y', 'm'])))
-    for i in range(len(means)):
-        print(means[i])
-        plt.plot([means[i], means[i]], label='m='+str(i + 1)+", mean=" + str(means[i]))
-    plt.legend(bbox_to_anchor=(1, 1))
-    plt.yticks(np.arange(means.min() - 0.05, means.max() + 0.05, 0.01))
-    plt.ylim(means.min()-0.05, means.max()+0.05)
+    x = np.linspace(0, 1000, 100, dtype=int)
+    # for i in range(5):
+    plt.plot(x, np.mean(data[0, :x]))
+    # plt.rc('axes', prop_cycle=(cycler.cycler('color', ['r', 'g', 'b', 'y', 'm'])))
+    # for i in range(len(means)):
+    #     print(means[i])
+    #     plt.plot([means[i], means[i]], label='m='+str(i + 1)+", mean=" + str(means[i]))
+    # plt.legend(bbox_to_anchor=(1, 1))
+    # plt.yticks(np.arange(means.min() - 0.05, means.max() + 0.05, 0.01))
+    # plt.ylim(means.min()-0.05, means.max()+0.05)
     plt.show()
+    # plt.savefig('q29_a.png')
 
 def q_29_b():
     pass
@@ -112,5 +116,5 @@ if __name__ == '__main__':
     # q_25()
     # q_26()
     # q_27()
-    # q_29_a()
-    q_29_b()
+    q_29_a()
+    # q_29_b()
