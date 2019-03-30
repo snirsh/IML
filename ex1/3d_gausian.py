@@ -11,7 +11,7 @@ scaling_matrix = np.diag(np.array([.1, .5, 2]))
 scaled_matrix = np.dot(scaling_matrix, x_y_z)
 projection_matrix = np.diag(np.array([1, 1, 0]))
 data = np.random.binomial(1, 0.25, (100000, 1000))
-epsilon = np.array([0.5, 0.25, 0.1, 0.01, 0.001])
+epsilons = [0.5, 0.25, 0.1, 0.01, 0.001]
 
 
 def get_orthogonal_matrix(dim):
@@ -96,8 +96,8 @@ def q_29_a():
     y = np.zeros(989)
     for i in range(5):
         for j in range(10, 999):
-            y[j-10] = np.mean(data[i, :j+10])
-        plt.plot(y, label='X_'+str(i+1))
+            y[j - 10] = np.mean(data[i, :j + 10])
+        plt.plot(y, label='X_' + str(i + 1))
         y = np.zeros(989)
     plt.legend(bbox_to_anchor=(1, 1))
     # plt.show()
@@ -105,7 +105,25 @@ def q_29_a():
 
 
 def q_29_b():
-    pass
+    chevyshev_bound = lambda m, eps: (1 / (4 * m)) * (eps ** 2)
+    hoeffding_bound = lambda m, eps: 2 * (np.exp(-2 * m * eps ** 2))
+    y_ub = np.zeros(990)
+    y_hd = np.zeros(990)
+    for i in range(len(epsilons)):
+        plt.subplot(2, 3, i + 1)
+        plt.title('epsilon=' + str(epsilons[i]))
+        for j in range(0, 990):
+            y_ub[j] = chevyshev_bound(j + 1, epsilons[i])
+            y_hd[j] = hoeffding_bound(j + 1, epsilons[i])
+            if y_ub[j] > 1:
+                y_ub[j] = 1
+            if y_hd[j] > 1:
+                y_hd[j] = 1
+        plt.plot(y_ub)
+        plt.plot(y_hd)
+        y_ub = np.zeros(990)
+        y_hd = np.zeros(990)
+    plt.show()
 
 
 if __name__ == '__main__':
