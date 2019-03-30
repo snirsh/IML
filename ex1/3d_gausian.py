@@ -1,3 +1,4 @@
+import cycler
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -9,7 +10,8 @@ x_y_z = np.random.multivariate_normal(mean, cov, 50000).T
 scaling_matrix = np.diag(np.array([.1, .5, 2]))
 scaled_matrix = np.dot(scaling_matrix, x_y_z)
 projection_matrix = np.diag(np.array([1, 1, 0]))
-
+data = np.random.binomial(1, 0.25, (100000, 1000))
+epsilon = np.array([0.5, 0.25, 0.1, 0.01, 0.001])
 
 def get_orthogonal_matrix(dim):
     H = np.random.randn(dim, dim)
@@ -89,16 +91,26 @@ def q_27():
     plt.savefig('q27.png')
 
 
-def concentration_inequalities():
-    data = np.random.binomial(1, 0.25, (100000, 1000))
-    epsilon = np.array([0.5, 0.25, 0.1, 0.01, 0.001])
-    firs_five_rows = data[0, :5]
+def q_29_a():
+    means = np.mean(data[:5, :], axis=1).T
+    plt.rc('axes', prop_cycle=(cycler.cycler('color', ['r', 'g', 'b', 'y', 'm'])))
+    for i in range(len(means)):
+        print(means[i])
+        plt.plot([means[i], means[i]], label='m='+str(i + 1)+", mean=" + str(means[i]))
+    plt.legend(bbox_to_anchor=(1, 1))
+    plt.yticks(np.arange(means.min() - 0.05, means.max() + 0.05, 0.01))
+    plt.ylim(means.min()-0.05, means.max()+0.05)
+    plt.show()
+
+def q_29_b():
+    pass
 
 
 if __name__ == '__main__':
-    q_23()
-    q_24()
-    q_25()
-    q_26()
-    q_27()
-    # concentration_inequalities()
+    # q_23()
+    # q_24()
+    # q_25()
+    # q_26()
+    # q_27()
+    # q_29_a()
+    q_29_b()
