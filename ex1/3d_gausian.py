@@ -13,6 +13,7 @@ projection_matrix = np.diag(np.array([1, 1, 0]))
 data = np.random.binomial(1, 0.25, (100000, 1000))
 epsilon = np.array([0.5, 0.25, 0.1, 0.01, 0.001])
 
+
 def get_orthogonal_matrix(dim):
     H = np.random.randn(dim, dim)
     Q, R = qr(H)
@@ -92,19 +93,16 @@ def q_27():
 
 
 def q_29_a():
-    means = np.mean(data[:5, :], axis=1).T
-    x = np.linspace(0, 1000, 100, dtype=int)
-    # for i in range(5):
-    plt.plot(x, np.mean(data[0, :x]))
-    # plt.rc('axes', prop_cycle=(cycler.cycler('color', ['r', 'g', 'b', 'y', 'm'])))
-    # for i in range(len(means)):
-    #     print(means[i])
-    #     plt.plot([means[i], means[i]], label='m='+str(i + 1)+", mean=" + str(means[i]))
-    # plt.legend(bbox_to_anchor=(1, 1))
-    # plt.yticks(np.arange(means.min() - 0.05, means.max() + 0.05, 0.01))
-    # plt.ylim(means.min()-0.05, means.max()+0.05)
-    plt.show()
-    # plt.savefig('q29_a.png')
+    y = np.zeros(989)
+    for i in range(5):
+        for j in range(10, 999):
+            y[j-10] = np.mean(data[i, :j+10])
+        plt.plot(y, label='X_'+str(i+1))
+        y = np.zeros(989)
+    plt.legend(bbox_to_anchor=(1, 1))
+    # plt.show()
+    plt.savefig('q29_a.png')
+
 
 def q_29_b():
     pass
@@ -116,5 +114,5 @@ if __name__ == '__main__':
     # q_25()
     # q_26()
     # q_27()
-    q_29_a()
-    # q_29_b()
+    # q_29_a()
+    q_29_b()
