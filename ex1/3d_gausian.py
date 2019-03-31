@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.linalg import qr
+from numpy import exp
 
 mean = [0, 0, 0]
 cov = np.eye(3)
@@ -12,6 +13,14 @@ scaled_matrix = np.dot(scaling_matrix, x_y_z)
 projection_matrix = np.diag(np.array([1, 1, 0]))
 data = np.random.binomial(1, 0.25, (100000, 1000))
 epsilons = [0.5, 0.25, 0.1, 0.01, 0.001]
+
+
+def hofding(m, eps):
+    return min(2 * exp(- 2 * m * pow(eps, 2)), 1)
+
+
+def chevyshev(m, eps):
+    return min(1 / (4 * m * pow(eps, 2)), 1)
 
 
 def get_orthogonal_matrix(dim):
@@ -105,24 +114,57 @@ def q_29_a():
 
 
 def q_29_b():
-    chevyshev_bound = lambda m, eps: (1 / (4 * m)) * (eps ** 2)
-    hoeffding_bound = lambda m, eps: 2 * (np.exp(-2 * m * eps ** 2))
-    y_ub = np.zeros(990)
-    y_hd = np.zeros(990)
-    for i in range(len(epsilons)):
-        plt.subplot(2, 3, i + 1)
-        plt.title('epsilon=' + str(epsilons[i]))
-        for j in range(0, 990):
-            y_ub[j] = chevyshev_bound(j + 1, epsilons[i])
-            y_hd[j] = hoeffding_bound(j + 1, epsilons[i])
-            if y_ub[j] > 1:
-                y_ub[j] = 1
-            if y_hd[j] > 1:
-                y_hd[j] = 1
-        plt.plot(y_ub)
-        plt.plot(y_hd)
-        y_ub = np.zeros(990)
-        y_hd = np.zeros(990)
+    i = 0
+    eps_num = dict()
+    for eps in epsilons:
+        eps_num[eps] = i
+        i += 1
+    x_axis = np.arange(1, 1001)
+    graphs = dict()
+    for eps in epsilons:
+        graphs[eps] = list()
+
+    g_hof = dict()
+    g_chv = dict()
+    count = dict()
+    prect = dict()
+    for eps in epsilons:
+        g_hof[eps] = list()
+        g_chv[eps] = list()
+        prect[eps] = list()
+
+    for m in range(1,1001):
+        for eps in epsilons:
+            g_hof[eps].append(hofding(m, eps))
+            g_chv[eps].append(chevyshev(m, eps))
+            count[eps] = 0
+
+        for seq in range(100000):
+            toss = sum(data[seq][:m])/m
+            for eps in epsilons:
+                if abs(toss-0.25) >= eps:
+                    count[eps] += 1
+        for eps in epsilons:
+            prect[eps].append(count[eps]/ 100000)
+
+        for e in epsilons:
+            prect[e].append(count[eps] / 100000)
+
+    for eps in epsilons:
+        plt.figure(eps_num[eps])
+        plt.title("epsilon: " + str(eps))
+        plt.plot(x_axis, g_hof[eps], label='Hoeffding')
+        plt.plot(x_axis, g_chv[eps], label='Chevychev')
+        plt.plot(x_axis, prect[eps], label='Precentage')
+        plt.legend()
+    plt.show()
+
+
+def q_29_c():
+    means = []
+    for e in epsilons:
+        means = np.abs(np.mean(data, axis=1) - 0.25)
+
     plt.show()
 
 
@@ -134,3 +176,4 @@ if __name__ == '__main__':
     # q_27()
     # q_29_a()
     q_29_b()
+    # q_29_c()
