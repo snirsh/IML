@@ -12,7 +12,10 @@ scaled_matrix = np.dot(scaling_matrix, x_y_z)
 projection_matrix = np.diag(np.array([1, 1, 0]))
 data = np.random.binomial(1, 0.25, (100000, 1000))
 epsilons = [0.5, 0.25, 0.1, 0.01, 0.001]
-f = lambda d, m: np.apply_along_axis(np.mean, 0, d[:m])
+# f = lambda d, m: np.apply_along_axis(np.mean, 0, d[:m])
+cummean = lambda x: x.cumsum() / np.arange(1, len(x) + 1)
+pct = lambda x, epsilon: np.true_divide(np.where(x >= epsilon)[0].shape[0], 100000)
+means = np.apply_along_axis(cummean, 1, data)
 
 
 def hoeffding(m, eps):
@@ -72,7 +75,7 @@ def q_24():
     # plt.show()
     plt.savefig('q24.png')
     # the covariance matrix will look like S^2 now since the original was Id_3
-    scaled_covariance = scaled_matrix ** 2
+    # scaled_covariance = scaled_matrix ** 2
 
 
 def q_25():
@@ -103,11 +106,11 @@ def q_27():
 
 def q_29_a():
     for i in range(5):
-        y = [f(data[i], m) for m in range(1, 1001)]
-        plt.plot(y, label='X_' + str(i + 1))
+        plt.plot(means[i], label='X of row number ' + str(i + 1))
     plt.legend(bbox_to_anchor=(1, 1))
     # plt.show()
     plt.savefig('q29_a.png')
+    plt.close()
 
 
 def q_29_b():
@@ -122,20 +125,23 @@ def q_29_b():
     plt.legend(bbox_to_anchor=(2.5, .75))
     # plt.show()
     plt.savefig('q29_b.png')
+    plt.close()
 
 
 def q_29_c():
+    new_means = np.abs(means - 0.25)
     for i in range(5):
-        plt.subplot(5, 5, i + 1)
+        plt.subplot(2, 3, i + 1, autoscale_on=True)
         hf_g = [hoeffding(m, epsilons[i]) for m in range(1, 1001)]
         ch_g = [chevyshev(m, epsilons[i]) for m in range(1, 1001)]
+        pct_matrix = np.apply_along_axis(pct, 0, new_means, epsilons[i])
         plt.plot(hf_g, label='hoeffding bound')
         plt.plot(ch_g, label='chevyshev bound')
+        plt.plot(pct_matrix, label='precentage')
         plt.title('epsilon=' + str(epsilons[i]))
     plt.legend(bbox_to_anchor=(1, 1))
-    plt.show()
-    # plt.savefig('q29_c.png')
-
+    # plt.show()
+    plt.savefig('q29_c.png')
 
 
 if __name__ == '__main__':
