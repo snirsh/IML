@@ -1,4 +1,3 @@
-import cycler
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -13,9 +12,10 @@ scaled_matrix = np.dot(scaling_matrix, x_y_z)
 projection_matrix = np.diag(np.array([1, 1, 0]))
 data = np.random.binomial(1, 0.25, (100000, 1000))
 epsilons = [0.5, 0.25, 0.1, 0.01, 0.001]
+f = lambda d, m: np.apply_along_axis(np.mean, 0, d[:m])
 
 
-def hofding(m, eps):
+def hoeffding(m, eps):
     return min(2 * exp(- 2 * m * pow(eps, 2)), 1)
 
 
@@ -102,70 +102,40 @@ def q_27():
 
 
 def q_29_a():
-    y = np.zeros(989)
     for i in range(5):
-        for j in range(10, 999):
-            y[j - 10] = np.mean(data[i, :j + 10])
+        y = [f(data[i], m) for m in range(1, 1001)]
         plt.plot(y, label='X_' + str(i + 1))
-        y = np.zeros(989)
     plt.legend(bbox_to_anchor=(1, 1))
     # plt.show()
     plt.savefig('q29_a.png')
 
 
 def q_29_b():
-    i = 0
-    eps_num = dict()
-    for eps in epsilons:
-        eps_num[eps] = i
-        i += 1
-    x_axis = np.arange(1, 1001)
-    graphs = dict()
-    for eps in epsilons:
-        graphs[eps] = list()
-
-    g_hof = dict()
-    g_chv = dict()
-    count = dict()
-    prect = dict()
-    for eps in epsilons:
-        g_hof[eps] = list()
-        g_chv[eps] = list()
-        prect[eps] = list()
-
-    for m in range(1,1001):
-        for eps in epsilons:
-            g_hof[eps].append(hofding(m, eps))
-            g_chv[eps].append(chevyshev(m, eps))
-            count[eps] = 0
-
-        for seq in range(100000):
-            toss = sum(data[seq][:m])/m
-            for eps in epsilons:
-                if abs(toss-0.25) >= eps:
-                    count[eps] += 1
-        for eps in epsilons:
-            prect[eps].append(count[eps]/ 100000)
-
-        for e in epsilons:
-            prect[e].append(count[eps] / 100000)
-
-    for eps in epsilons:
-        plt.figure(eps_num[eps])
-        plt.title("epsilon: " + str(eps))
-        plt.plot(x_axis, g_hof[eps], label='Hoeffding')
-        plt.plot(x_axis, g_chv[eps], label='Chevychev')
-        plt.plot(x_axis, prect[eps], label='Precentage')
-        plt.legend()
-    plt.show()
+    for i in range(5):
+        plt.subplot(2, 3, i + 1, autoscale_on=True)
+        hf_g = [hoeffding(m, epsilons[i]) for m in range(1, 1001)]
+        ch_g = [chevyshev(m, epsilons[i]) for m in range(1, 1001)]
+        plt.plot(hf_g, label='hoeffding bound')
+        plt.plot(ch_g, label='chevyshev bound')
+        plt.title('epsilon=' + str(epsilons[i]))
+        plt.tight_layout()
+    plt.legend(bbox_to_anchor=(2.5, .75))
+    # plt.show()
+    plt.savefig('q29_b.png')
 
 
 def q_29_c():
-    means = []
-    for e in epsilons:
-        means = np.abs(np.mean(data, axis=1) - 0.25)
-
+    for i in range(5):
+        plt.subplot(5, 5, i + 1)
+        hf_g = [hoeffding(m, epsilons[i]) for m in range(1, 1001)]
+        ch_g = [chevyshev(m, epsilons[i]) for m in range(1, 1001)]
+        plt.plot(hf_g, label='hoeffding bound')
+        plt.plot(ch_g, label='chevyshev bound')
+        plt.title('epsilon=' + str(epsilons[i]))
+    plt.legend(bbox_to_anchor=(1, 1))
     plt.show()
+    # plt.savefig('q29_c.png')
+
 
 
 if __name__ == '__main__':
@@ -175,5 +145,5 @@ if __name__ == '__main__':
     # q_26()
     # q_27()
     # q_29_a()
-    q_29_b()
-    # q_29_c()
+    # q_29_b()
+    q_29_c()
