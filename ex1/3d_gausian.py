@@ -67,12 +67,14 @@ def plot_2d(x_y):
 def q_23():
     plot_3d(x_y_z)
     # plt.show()
+    plt.title('data representation')
     plt.savefig('q23.png')
 
 
 def q_24():
     plot_3d(scaled_matrix)
     # plt.show()
+    plt.title('Covariance after scaling')
     plt.savefig('q24.png')
     # the covariance matrix will look like S^2 now since the original was Id_3
     # scaled_covariance = scaled_matrix ** 2
@@ -83,6 +85,7 @@ def q_25():
     evd_decomposition = np.dot(random_orthogonal_matrix, scaled_matrix)
     plot_3d(evd_decomposition)
     # plt.show()
+    plt.title('Covariance after random orthogonal matrix')
     plt.savefig('q25.png')
     # the covariance matrix looks like the EVD decomposition of S^2
     # random_orthogonal_matrix * scaled_matrix ** 2 * random_orthogonal_matrix.T
@@ -92,6 +95,7 @@ def q_26():
     projection_onto_xy = np.dot(projection_matrix, scaled_matrix)
     plot_2d(projection_onto_xy)
     # plt.show()
+    plt.title('Projection onto xy axis')
     plt.savefig('q26.png')
     # it looks like the gaussian's mean
 
@@ -100,6 +104,7 @@ def q_27():
     ranged_pts = np.where((scaled_matrix[2, :] > -0.4) & (scaled_matrix[2, :] < 0.1))[0]
     points_within_range = np.take(scaled_matrix, ranged_pts, 1)
     plot_2d(np.dot(projection_matrix, points_within_range))
+    plt.title('Projection onto xy axis for all z in (-0.4,0.1)')
     # plt.show()
     plt.savefig('q27.png')
 
@@ -109,6 +114,9 @@ def q_29_a():
         plt.plot(means[i], label='X of row number ' + str(i + 1))
     plt.legend(bbox_to_anchor=(1, 1))
     # plt.show()
+    plt.title('Cumulative mean')
+    plt.xlabel('tosses')
+    plt.ylabel('mean')
     plt.savefig('q29_a.png')
     plt.close()
 
@@ -121,8 +129,10 @@ def q_29_b():
         plt.plot(hf_g, label='hoeffding bound')
         plt.plot(ch_g, label='chevyshev bound')
         plt.title('epsilon=' + str(epsilons[i]))
+        plt.ylabel('upper bound')
+        plt.xlabel('m tosses')
         plt.tight_layout()
-    plt.legend(bbox_to_anchor=(2.5, .75))
+    plt.legend(bbox_to_anchor=(1.2, .75))
     # plt.show()
     plt.savefig('q29_b.png')
     plt.close()
@@ -138,8 +148,11 @@ def q_29_c():
         plt.plot(hf_g, label='hoeffding bound')
         plt.plot(ch_g, label='chevyshev bound')
         plt.plot(pct_matrix, label='precentage')
+        plt.ylabel('upper bound')
+        plt.xlabel('m tosses')
         plt.title('epsilon=' + str(epsilons[i]))
-    plt.legend(bbox_to_anchor=(1, 1))
+        plt.subplots_adjust(wspace=0.3, hspace=0.5)
+    plt.legend(bbox_to_anchor=(1.2, .75))
     # plt.show()
     plt.savefig('q29_c.png')
 
