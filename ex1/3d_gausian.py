@@ -16,7 +16,7 @@ epsilons = [0.5, 0.25, 0.1, 0.01, 0.001]
 cummean = lambda x: x.cumsum() / np.arange(1, len(x) + 1)
 pct = lambda x, epsilon: np.true_divide(np.where(x >= epsilon)[0].shape[0], 100000)
 means = np.apply_along_axis(cummean, 1, data)
-
+n_minus_one = 49999
 
 def hoeffding(m, eps):
     return min(2 * exp(- 2 * m * pow(eps, 2)), 1)
@@ -66,27 +66,37 @@ def plot_2d(x_y):
 
 def q_23():
     plot_3d(x_y_z)
-    # plt.show()
+    plt.show()
     plt.title('data representation')
-    plt.savefig('q23.png')
+    # plt.savefig('q23.png')
+    plt.close()
 
 
 def q_24():
     plot_3d(scaled_matrix)
-    # plt.show()
+    plt.show()
     plt.title('Covariance after scaling')
-    plt.savefig('q24.png')
+    # plt.savefig('q24.png')
+    scaled_mean = scaled_matrix.mean(axis=1)
+    centered = scaled_matrix - scaled_mean[:, None]
+    cov = np.true_divide(np.dot(centered, centered.T), n_minus_one)
+    print(cov)
+    plt.close()
     # the covariance matrix will look like S^2 now since the original was Id_3
-    # scaled_covariance = scaled_matrix ** 2
 
 
 def q_25():
     random_orthogonal_matrix = get_orthogonal_matrix(3)
     evd_decomposition = np.dot(random_orthogonal_matrix, scaled_matrix)
     plot_3d(evd_decomposition)
-    # plt.show()
+    plt.show()
     plt.title('Covariance after random orthogonal matrix')
-    plt.savefig('q25.png')
+    # plt.savefig('q25.png')
+    evd_mean = evd_decomposition.mean(axis=1)
+    centered = evd_decomposition - evd_mean[:, None]
+    cov = np.true_divide(np.dot(centered, centered.T), n_minus_one)
+    print(cov)
+    plt.close()
     # the covariance matrix looks like the EVD decomposition of S^2
     # random_orthogonal_matrix * scaled_matrix ** 2 * random_orthogonal_matrix.T
 
@@ -94,9 +104,10 @@ def q_25():
 def q_26():
     projection_onto_xy = np.dot(projection_matrix, scaled_matrix)
     plot_2d(projection_onto_xy)
-    # plt.show()
+    plt.show()
     plt.title('Projection onto xy axis')
-    plt.savefig('q26.png')
+    # plt.savefig('q26.png')
+    plt.close()
     # it looks like the gaussian's mean
 
 
@@ -105,19 +116,20 @@ def q_27():
     points_within_range = np.take(scaled_matrix, ranged_pts, 1)
     plot_2d(np.dot(projection_matrix, points_within_range))
     plt.title('Projection onto xy axis for all z in (-0.4,0.1)')
-    # plt.show()
-    plt.savefig('q27.png')
+    plt.show()
+    # plt.savefig('q27.png')
+    plt.close()
 
 
 def q_29_a():
     for i in range(5):
         plt.plot(means[i], label='X of row number ' + str(i + 1))
     plt.legend(bbox_to_anchor=(1, 1))
-    # plt.show()
     plt.title('Cumulative mean')
     plt.xlabel('tosses')
     plt.ylabel('mean')
-    plt.savefig('q29_a.png')
+    # plt.savefig('q29_a.png')
+    plt.show()
     plt.close()
 
 
@@ -133,8 +145,8 @@ def q_29_b():
         plt.xlabel('m tosses')
         plt.tight_layout()
     plt.legend(bbox_to_anchor=(1.2, .75))
-    # plt.show()
-    plt.savefig('q29_b.png')
+    plt.show()
+    # plt.savefig('q29_b.png')
     plt.close()
 
 
@@ -158,11 +170,11 @@ def q_29_c():
 
 
 if __name__ == '__main__':
-    # q_23()
-    # q_24()
-    # q_25()
-    # q_26()
-    # q_27()
-    # q_29_a()
-    # q_29_b()
+    q_23()
+    q_24()
+    q_25()
+    q_26()
+    q_27()
+    q_29_a()
+    q_29_b()
     q_29_c()
