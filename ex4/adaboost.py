@@ -103,7 +103,7 @@ def q9():
         plt.subplot(3, 3, i, autoscale_on=True)
         h = AdaBoost(DecisionStump, t)
         h.train(X, y)
-        err[i] = h.error(X, y, t)
+        err[i-1] = h.error(X, y, t)
         decision_boundaries(h, X, y, t)
     plt.savefig('q9')
     plt.show()
@@ -123,6 +123,6 @@ def q10():
 
 
 if __name__ == '__main__':
-    q8()
-    q9()
+    # q8()
+    # q9()
     q10()
