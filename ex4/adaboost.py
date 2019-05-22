@@ -46,7 +46,7 @@ class AdaBoost(object):
             v = np.exp(-self.w[t] * y * y_t)
             g = D * v
             c = np.sum(g)
-            D = g/c
+            D = g / c
 
     def predict(self, X, max_t):
         """
@@ -76,8 +76,8 @@ class AdaBoost(object):
 def q8():
     training_err = np.zeros((500,))
     test_err = np.zeros((500,))
+    X, y = generate_data(5000, 0)
     for t in range(1, 501):
-        X, y = generate_data(5000, 0)
         h = AdaBoost(DecisionStump, t)
         h.train(X, y)
         training_err[t - 1] = h.error(X, y, t)
@@ -86,9 +86,10 @@ def q8():
     plt.plot(range(500), training_err, label='Training error')
     plt.plot(range(500), test_err, label='Test error')
     plt.title('question 8')
+    plt.legend(loc='upper right')
     plt.xlabel('T')
     plt.ylabel('Error')
-    plt.show()
+    # plt.show()
     plt.savefig('q8')
 
 
@@ -102,10 +103,14 @@ def q9():
         h = AdaBoost(DecisionStump, t)
         h.train(X, y)
         decision_boundaries(h, X, y, t)
-    plt.show()
+    # plt.show()
     plt.savefig('q9')
+
+
+def q10():
+    pass
 
 
 if __name__ == '__main__':
     q8()
-    # q9()
+    q9()
