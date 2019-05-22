@@ -37,7 +37,7 @@ class AdaBoost(object):
         After finish the training return the weights of the samples in the last iteration.
         """
         m, d = X.shape
-        D = np.zeros((m,)) + 1/m
+        D = np.zeros((m,)) + 1 / m
         for t in range(self.T):
             self.h[t] = self.WL(D, X, y)
             y_t = self.h[t].predict(X)
@@ -75,15 +75,28 @@ def q8():
     training_err = np.zeros((500,))
     test_err = np.zeros((500,))
     for t in range(1, 500):
-        h = AdaBoost(DecisionStump, 500)
+        h = AdaBoost(DecisionStump, t)
         h.train(X, y)
         test_set, labels = generate_data(200, 0)
         training_err[t] = h.error(X, y, t)
         test_err[t] = h.error(test_set, labels, t)
     x = np.arange(1, 500)
-    plt.plot(x, training_err)
-    plt.plot(x, test_err)
-    plt.show()
+    plt.plot(x, training_err, label='Training error')
+    plt.plot(x, test_err, label='Test error')
+    plt.title('question 8')
+    plt.xlabel('T')
+    plt.ylabel('Error')
+    # plt.show()
+    plt.savefig('q8.png')
+
+
+def q9():
+    T = [5, 10, 50, 100, 200, 500]
+    X, y = generate_data(5000, 0)
+    h = AdaBoost(DecisionStump, 500)
+    for t in T:
+        decision_boundaries()
+
 
 
 if __name__ == '__main__':
