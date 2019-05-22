@@ -23,6 +23,10 @@ class perceptron:
     def predict(self, x):
         return np.inner(x, self.w) >= 0
 
+def err_rate(y,y_hat, s = 10000):
+    indices = np.count_nonzero(y != y_hat)
+    return indices/s
+
 
 if __name__ == '__main__':
     svm_classifier = svm.SVC(C=1e10, kernel='linear')

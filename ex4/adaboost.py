@@ -36,14 +36,13 @@ class AdaBoost(object):
         After finish the training return the weights of the samples in the last iteration.
         """
         m, d = X.shape
-        D = np.array([1 / m] * m)
+        D = np.dot(np.subtract(1 , m) , m)
         for t in range(self.T):
             self.h[t] = self.WL(D, X, y)
             h_t = self.h[t].predict(X)
             e_t = np.sum(np.logical_not(y == h_t) * D)
             self.w[t] = 0.5 * np.log((1 / e_t) - 1)
-            n = np.sum([D * np.exp(-1 * self.w[t] * y * h_t)])
-            D = (D * np.exp(-1 * self.w[t] * y * h_t)) / n
+            D = np.subtract(D * np.exp(-1 * self.w[t] * y * h_t), np.sum([D * np.exp(-1 * self.w[t] * y * h_t)]))
 
     def predict(self, X, max_t):
         """
@@ -55,7 +54,7 @@ class AdaBoost(object):
         Predict only with max_t weak learners,
         """
         h_predict = [self.h[t].predict(X) for t in range(max_t)]
-        return np.sign([np.sum([h_predict[t][i] * self.w[t] for t in range(max_t)]) for i in range(len(X))])
+        return np.sign([np.dot([h_predict[t], self.w[t]) for t in range(max_t)])
 
     def error(self, X, y, max_t):
         """
