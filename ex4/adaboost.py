@@ -5,11 +5,12 @@
 
 Skeleton for the AdaBoost classifier.
 
-Author: Noga Zaslavsky
-Edited: Yoav Wald, May 2018
+Author: Gad Zalcberg
+Date: February, 2019
 
 """
 import numpy as np
+
 
 class AdaBoost(object):
 
@@ -22,37 +23,48 @@ class AdaBoost(object):
         """
         self.WL = WL
         self.T = T
-        self.h = [None]*T     # list of base learners
+        self.h = [None] * T  # list of base learners
         self.w = np.zeros(T)  # weights
 
     def train(self, X, y):
         """
+        Parameters
+        ----------
+        X : samples, shape=(num_samples, num_features)
+        y : labels, shape=(num_samples)
         Train this classifier over the sample (X,y)
+        After finish the training return the weights of the samples in the last iteration.
         """
-        m,d = X.shape
-        D = np.array([1/m] * m)
+        m, d = X.shape
+        D = np.array([1 / m] * m)
         for t in range(self.T):
-            self.h[t] = self.WL(D,X,y)
+            self.h[t] = self.WL(D, X, y)
             h_t = self.h[t].predict(X)
-            epsilon_t = np.sum(np.logical_not(y==h_t) * D)
-            self.w[t] = 0.5 * np.log((1/epsilon_t) - 1)
+            e_t = np.sum(np.logical_not(y == h_t) * D)
+            self.w[t] = 0.5 * np.log((1 / e_t) - 1)
             n = np.sum([D * np.exp(-1 * self.w[t] * y * h_t)])
             D = (D * np.exp(-1 * self.w[t] * y * h_t)) / n
 
-    def predict(self, X):
+    def predict(self, X, max_t):
         """
-        Returns
-        -------
-        y_hat : a prediction vector for X
+        Parameters
+        ----------
+        X : samples, shape=(num_samples, num_features)
+        :param max_t: integer < self.T: the number of classifiers to use for the classification
+        :return: y_hat : a prediction vector for X. shape=(num_samples)
+        Predict only with max_t weak learners,
         """
-        h_predict = [self.h[t].predict(X) for t in range(self.T)]
-        return np.sign([ np.sum([h_predict[t][i] * self.w[t] for t in range(self.T)])  for i in range(len(X))])
+        h_predict = [self.h[t].predict(X) for t in range(max_t)]
+        return np.sign([np.sum([h_predict[t][i] * self.w[t] for t in range(max_t)]) for i in range(len(X))])
 
-    def error(self, X, y):
+    def error(self, X, y, max_t):
         """
-        Returns
-        -------
-        the error of this classifier over the sample (X,y)
+        Parameters
+        ----------
+        X : samples, shape=(num_samples, num_features)
+        y : labels, shape=(num_samples)
+        :param max_t: integer < self.T: the number of classifiers to use for the classification
+        :return: error : the ratio of the wrong predictions when predict only with max_t weak learners (float)
         """
-        ans = self.predict(X)
-        return np.sum(np.logical_not(np.equal(ans,y))) / len(X)
+        prediction = self.predict(X, max_t)
+        return np.sum(np.logical_not(np.equal(prediction, y))) / len(X)

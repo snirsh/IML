@@ -10,11 +10,11 @@ class perceptron:
         self.b = None
 
     def fit(self, X, y):
-        self.w = np.zeros(X.shape[1])
+        self.w = np.zeros(len(X))
         while True:
             w_t = self.w
             for i in range(len(y)):
-                product = y[i] * np.inner(self.w, X[i])
+                product = np.dot(y[i], np.inner(self.w, X[i]))
                 if product < 1:
                     self.w = self.w + np.dot(y[i], X[i])
             if np.array_equal(w_t, self.w):
