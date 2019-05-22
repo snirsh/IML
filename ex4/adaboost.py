@@ -54,7 +54,7 @@ class AdaBoost(object):
         Predict only with max_t weak learners,
         """
         h_predict = [self.h[t].predict(X) for t in range(max_t)]
-        return np.sign([np.dot([h_predict[t], self.w[t]) for t in range(max_t)])
+        return np.sign([np.dot(h_predict[t], self.w[t]) for t in range(max_t)])
 
     def error(self, X, y, max_t):
         """
