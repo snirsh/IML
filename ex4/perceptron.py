@@ -48,4 +48,4 @@ if __name__ == '__main__':
         p.fit(X, Y)
         true_pred = Y
         per_pred = p.predict(X)
-        plt.show()
+    plt.show()
