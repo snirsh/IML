@@ -10,6 +10,7 @@ Date: February, 2019
 
 """
 import numpy as np
+from ex4_tools import *
 
 
 class AdaBoost(object):
@@ -36,13 +37,13 @@ class AdaBoost(object):
         After finish the training return the weights of the samples in the last iteration.
         """
         m, d = X.shape
-        D = np.dot(np.subtract(1 , m) , m)
+        D = np.zeros((m,)) + 1/m
         for t in range(self.T):
             self.h[t] = self.WL(D, X, y)
-            h_t = self.h[t].predict(X)
-            e_t = np.sum(np.logical_not(y == h_t) * D)
-            self.w[t] = 0.5 * np.log((1 / e_t) - 1)
-            D = np.subtract(D * np.exp(-1 * self.w[t] * y * h_t), np.sum([D * np.exp(-1 * self.w[t] * y * h_t)]))
+            y_t = self.h[t].predict(X)
+            e_t = np.sum(D[y != y_t])
+            self.w[t] = 0.5 * np.log(np.true_divide(1, e_t) - 1)
+            D = np.true_divide(D * np.exp(-1 * self.w[t] * y * y_t), np.sum([D * np.exp(-1 * self.w[t] * y * y_t)]))
 
     def predict(self, X, max_t):
         """
@@ -67,3 +68,23 @@ class AdaBoost(object):
         """
         prediction = self.predict(X, max_t)
         return np.sum(np.logical_not(np.equal(prediction, y))) / len(X)
+
+
+def q8():
+    X, y = generate_data(5000, 0)
+    training_err = np.zeros((500,))
+    test_err = np.zeros((500,))
+    for t in range(1, 500):
+        h = AdaBoost(DecisionStump, 500)
+        h.train(X, y)
+        test_set, labels = generate_data(200, 0)
+        training_err[t] = h.error(X, y, t)
+        test_err[t] = h.error(test_set, labels, t)
+    x = np.arange(1, 500)
+    plt.plot(x, training_err)
+    plt.plot(x, test_err)
+    plt.show()
+
+
+if __name__ == '__main__':
+    q8()

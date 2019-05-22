@@ -36,13 +36,11 @@ if __name__ == '__main__':
     M = [x * 5 for x in range(1, 4)] + [25, 70]
     i = 0
     for m in M:
-        #     plt.subplot(2, 3, i + 1, autoscale_on=True)
-
+        plt.subplot(2, 3, i + 1, autoscale_on=True)
         i += 1
         X = np.random.multivariate_normal(np.zeros(2), cov=np.identity(2), size=m)
         Y = np.apply_along_axis(f, 1, X)
         x, y = X.T
-        # plt.sh
         fig = plt.figure()
         ax = plt.axes()
         plt.scatter(x, y, c=Y)
