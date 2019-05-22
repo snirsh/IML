@@ -89,12 +89,13 @@ def q8():
     plt.legend(loc='upper right')
     plt.xlabel('T')
     plt.ylabel('Error')
-    # plt.show()
     plt.savefig('q8')
+    plt.show()
 
 
 def q9():
     T = [5, 10, 50, 100, 200, 500]
+    err = [0] * len(T)
     X, y = generate_data(100, 0.01)
     i = 0
     for t in T:
@@ -102,15 +103,26 @@ def q9():
         plt.subplot(3, 3, i, autoscale_on=True)
         h = AdaBoost(DecisionStump, t)
         h.train(X, y)
+        err[i] = h.error(X, y, t)
         decision_boundaries(h, X, y, t)
-    # plt.show()
     plt.savefig('q9')
+    plt.show()
+    return np.array(err)
 
 
 def q10():
-    pass
+    X, y = generate_data(1000, 0)
+    T = [5, 10, 50, 100, 200, 500]
+    i = np.argmin(q9())
+    T_min = T[i]
+    optimal_h = AdaBoost(DecisionStump, T_min)
+    optimal_h.train(X, y)
+    decision_boundaries(optimal_h, X, y)
+    plt.savefig('q10')
+    plt.show()
 
 
 if __name__ == '__main__':
     q8()
     q9()
+    q10()
