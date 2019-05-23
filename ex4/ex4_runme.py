@@ -123,7 +123,7 @@ def Q8():
 
 def Q9():
     err = [0] * len(T)
-    X, y = generate_data(100, 0.01)
+    X, y = generate_data(100, 0)
     i = 0
     for t in T:
         i += 1
