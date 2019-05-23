@@ -19,4 +19,4 @@ class perceptron:
                 return w_t
 
     def predict(self, x):
-        return np.inner(x, self.w) >= 0
+        return np.dot(x, self.w) >= 0
