@@ -9,7 +9,6 @@ Author: Gad Zalcberg
 Date: February, 2019
 
 """
-import numpy as np
 from ex4_tools import *
 
 
@@ -72,57 +71,3 @@ class AdaBoost(object):
         y_t = self.predict(X, max_t)
         return np.true_divide(np.count_nonzero(y != y_t), X.shape[0])
 
-
-def q8():
-    training_err = np.zeros((500,))
-    test_err = np.zeros((500,))
-    X, y = generate_data(5000, 0)
-    for t in range(1, 501):
-        h = AdaBoost(DecisionStump, t)
-        h.train(X, y)
-        training_err[t - 1] = h.error(X, y, t)
-        test_set, labels = generate_data(200, 0)
-        test_err[t - 1] = h.error(test_set, labels, t)
-    plt.plot(range(500), training_err, label='Training error')
-    plt.plot(range(500), test_err, label='Test error')
-    plt.title('question 8')
-    plt.legend(loc='upper right')
-    plt.xlabel('T')
-    plt.ylabel('Error')
-    plt.savefig('q8')
-    plt.show()
-
-
-def q9():
-    T = [5, 10, 50, 100, 200, 500]
-    err = [0] * len(T)
-    X, y = generate_data(100, 0.01)
-    i = 0
-    for t in T:
-        i += 1
-        plt.subplot(3, 3, i, autoscale_on=True)
-        h = AdaBoost(DecisionStump, t)
-        h.train(X, y)
-        err[i-1] = h.error(X, y, t)
-        decision_boundaries(h, X, y, t)
-    plt.savefig('q9')
-    plt.show()
-    return np.array(err)
-
-
-def q10():
-    X, y = generate_data(1000, 0)
-    T = [5, 10, 50, 100, 200, 500]
-    i = np.argmin(q9())
-    T_min = T[i]
-    optimal_h = AdaBoost(DecisionStump, T_min)
-    optimal_h.train(X, y)
-    decision_boundaries(optimal_h, X, y)
-    plt.savefig('q10')
-    plt.show()
-
-
-if __name__ == '__main__':
-    q8()
-    # q9()
-    # q10()
