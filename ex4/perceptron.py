@@ -10,22 +10,23 @@ class perceptron:
         self.b = None
 
     def fit(self, X, y):
-        self.w = np.zeros(len(X))
+        self.w = np.zeros(X.shape[1])
         while True:
             w_t = self.w
             for i in range(len(y)):
-                product = np.dot(y[i], np.inner(self.w, X[i]))
+                product = y[i] * np.dot(self.w, X[i])
                 if product < 1:
-                    self.w = self.w + np.dot(y[i], X[i])
+                    self.w = self.w + y[i] * X[i]
             if np.array_equal(w_t, self.w):
                 return w_t
 
     def predict(self, x):
         return np.inner(x, self.w) >= 0
 
-def err_rate(y,y_hat, s = 10000):
+
+def err_rate(y, y_hat, s=10000):
     indices = np.count_nonzero(y != y_hat)
-    return indices/s
+    return indices / s
 
 
 if __name__ == '__main__':
@@ -36,13 +37,14 @@ if __name__ == '__main__':
     M = [x * 5 for x in range(1, 4)] + [25, 70]
     i = 0
     for m in M:
-        plt.subplot(2, 3, i + 1, autoscale_on=True)
+        plt.subplot(3, 2, i + 1, autoscale_on=True)
         i += 1
         X = np.random.multivariate_normal(np.zeros(2), cov=np.identity(2), size=m)
         Y = np.apply_along_axis(f, 1, X)
+        svm_classifier.fit(X, Y)
         x, y = X.T
-        fig = plt.figure()
-        ax = plt.axes()
+        # fig = plt.figure()
+        # ax = plt.axes()
         plt.scatter(x, y, c=Y)
         p = perceptron()
         p.fit(X, Y)

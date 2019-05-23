@@ -1,5 +1,5 @@
 import numpy as np
-from perceptron import perceptron
+from perceptron import Perceptron
 import matplotlib.pyplot as plt
 # from mlxtend.plotting import plot_decision_regions
 
