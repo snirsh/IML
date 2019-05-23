@@ -73,16 +73,13 @@ def Q5():
             while (len(np.argwhere(y == 1)) == 0) or (len(np.argwhere(y == -1)) == 0):
                 X = np.random.multivariate_normal(mean, cov, m)
                 y = true_h(X)
-
-            test_set = np.random.multivariate_normal(mean, cov, TEST_SIZE)
-            test_labels = true_h(test_set)
-
             svmcls.fit(X, y)
             ones = np.ones((m, 1))
+            test_set = np.random.multivariate_normal(mean, cov, TEST_SIZE)
+            test_labels = true_h(test_set)
             X = np.hstack((X, ones))
             p = perceptron()
             p.fit(X, y)
-
             svms_y_hat = svmcls.predict(test_set)
             test_set = np.hstack((test_set, np.ones((TEST_SIZE, 1))))
             ps_y_hat = p.predict(test_set)
