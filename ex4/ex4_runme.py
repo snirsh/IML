@@ -87,8 +87,9 @@ def Q5():
             svms_y_hat = svmcls.predict(test_points)
             test_points = np.hstack((test_points, np.ones((TEST_SIZE, 1))))
             ps_y_hat = p.predict(test_points)
+            # ****************** GET ACCURACY ****************** #
             errs1[k] += get_accuracy(test_labels, svms_y_hat)
-            errs1[k] += get_accuracy(test_labels, ps_y_hat)
+            errs2[k] += get_accuracy(test_labels, ps_y_hat)
     plt.plot(M, np.true_divide(errs1, 500), label='SVM')
     plt.plot(M, np.true_divide(errs2, 500), label="Perceptron")
     plt.title('Mean accuracy as function of m')
@@ -138,7 +139,7 @@ def Q9():
 def Q10():
     X, y = generate_data(1000, 0)
     T = [5, 10, 50, 100, 200, 500]
-    i = np.argmin(Q9())
+    i = int(np.argmin(Q9()))
     T_min = T[i]
     optimal_h = AdaBoost(DecisionStump, T_min)
     optimal_h.train(X, y)
@@ -166,6 +167,6 @@ def Q18():
 if __name__ == '__main__':
     Q4()
     Q5()
-    # Q8()
-    # Q9()
-    # Q10()
+    Q8()
+    Q9()
+    Q10()
