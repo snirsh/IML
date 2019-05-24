@@ -32,7 +32,7 @@ def interval(w, u0):
 
 
 def get_accuracy(y, y_t):
-    return np.count_nonzero(y - y_t == 0)/ TEST_SIZE
+    return np.count_nonzero(y - y_t == 0) / TEST_SIZE
 
 
 def Q4():
