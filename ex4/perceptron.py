@@ -8,15 +8,16 @@ class perceptron:
         self.b = None
 
     def fit(self, X, y):
-        self.w = np.zeros(X.shape[1])
+        self.w = np.zeros((X.shape[1], ))
         while True:
             w_t = self.w
-            for i in range(len(y)):
-                product = y[i] * np.dot(self.w, X[i])
-                if product < 1:
-                    self.w = self.w + y[i] * X[i]
-            if np.array_equal(w_t, self.w):
+            ywx = y*np.dot(X, self.w)
+            # ywx = y*wx
+            neg_prod = np.argwhere(ywx <= 0)
+            if len(neg_prod) != 0:
+                self.w = self.w + y[neg_prod[0][0]] + X[neg_prod[0][0]]
+            else:
                 return w_t
 
     def predict(self, x):
-        return np.dot(x, self.w) >= 0
+        return np.sign(np.dot(x, self.w))

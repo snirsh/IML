@@ -22,7 +22,6 @@ cov = np.identity(2)
 w_t = np.array([0.3, -0.5, 0.1]).T
 true_h = lambda x: np.sign(np.dot(x, np.array([0.3, -0.5]) + 0.1))
 u_0 = np.array([-3, 3])
-svmcls = SVC(C=1e10, kernel='linear')
 M = [5, 10, 15, 25, 70]
 T = [5, 10, 50, 100, 200, 500]
 TEST_SIZE = 10000
@@ -32,9 +31,8 @@ def interval(w, u0):
     return -(w[2] + w[0] * u0) / w[1]
 
 
-def err_rate(y, y_t):
-    indices = np.count_nonzero(y - y_t == 0)
-    return indices / 10000
+def get_accuracy(y, y_t):
+    return np.count_nonzero(y - y_t == 0)/ TEST_SIZE
 
 
 def Q4():
@@ -68,34 +66,37 @@ def Q5():
     errs2 = np.zeros((5, 1))
     for k, m in enumerate(M):
         for i in range(500):
+            # ****************** GENERATING DATA ****************** #
             X = np.random.multivariate_normal(mean, cov, m)
             y = true_h(X)
             while (len(np.argwhere(y == 1)) == 0) or (len(np.argwhere(y == -1)) == 0):
                 X = np.random.multivariate_normal(mean, cov, m)
                 y = true_h(X)
+            # ****************** CLASSIFIERS ****************** #
+            # SVM
+            svmcls = SVC(C=1e10, kernel='linear')
             svmcls.fit(X, y)
-            ones = np.ones((m, 1))
-            test_set = np.random.multivariate_normal(mean, cov, TEST_SIZE)
-            test_labels = true_h(test_set)
-            X = np.hstack((X, ones))
+            # Perceptron
             p = perceptron()
+            X = np.hstack((X, np.ones((m, 1))))
             p.fit(X, y)
-            svms_y_hat = svmcls.predict(test_set)
-            test_set = np.hstack((test_set, np.ones((TEST_SIZE, 1))))
-            ps_y_hat = p.predict(test_set)
-            errs1[k] += err_rate(test_labels, svms_y_hat)
-            errs2[k] += err_rate(test_labels, ps_y_hat)
-    svm_mean_err = errs1 / 500
-    prs_mean_err = errs2 / 500
-    plt.plot(M, prs_mean_err, label="Perceptron's error rate")
-    plt.plot(M, svm_mean_err, label='SVM error rate')
+            # ****************** GENERATING TEST ****************** #
+            test_points = np.random.multivariate_normal(mean, cov, TEST_SIZE)
+            test_labels = true_h(test_points)
+            # ****************** MAKE PREDICTIONS ****************** #
+            svms_y_hat = svmcls.predict(test_points)
+            test_points = np.hstack((test_points, np.ones((TEST_SIZE, 1))))
+            ps_y_hat = p.predict(test_points)
+            errs1[k] += get_accuracy(test_labels, svms_y_hat)
+            errs1[k] += get_accuracy(test_labels, ps_y_hat)
+    plt.plot(M, np.true_divide(errs1, 500), label='SVM')
+    plt.plot(M, np.true_divide(errs2, 500), label="Perceptron")
     plt.title('Mean accuracy as function of m')
     plt.xlabel('samples(m)')
-    plt.xlabel('Mean Accuracy')
+    plt.ylabel('Mean Accuracy')
     plt.legend()
     plt.savefig('Q5')
     plt.show()
-
 
 
 def Q8():
@@ -127,7 +128,7 @@ def Q9():
         plt.subplot(3, 3, i, autoscale_on=True)
         h = AdaBoost(DecisionStump, t)
         h.train(X, y)
-        err[i-1] = h.error(X, y, t)
+        err[i - 1] = h.error(X, y, t)
         decision_boundaries(h, X, y, t)
     plt.savefig('Q9')
     plt.show()
@@ -163,7 +164,6 @@ def Q18():
 
 
 if __name__ == '__main__':
-    'TODO complete this function'
     Q4()
     Q5()
     Q8()
