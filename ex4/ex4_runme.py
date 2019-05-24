@@ -121,15 +121,14 @@ def Q8():
 
 
 def Q9():
-    X, y = generate_data(5000, 0)
+    X, y = generate_data(300, 0)
     h = AdaBoost(DecisionStump, 500)
     h.train(X, y)
     err = [0] * len(T)
-    i = 0
-    for t in T:
-        i += 1
-        plt.subplot(3, 3, i, autoscale_on=True)
-        err[i - 1] = h.error(X, y, t)
+    f = plt.figure(figsize=(10, 10))
+    for i, t in enumerate(T):
+        f.add_subplot(3, 2, i + 1)
+        err[i] = h.error(X, y, t)
         decision_boundaries(h, X, y, t)
     plt.savefig('Q9')
     plt.show()
@@ -144,6 +143,7 @@ def Q10():
     optimal_h = AdaBoost(DecisionStump, T_min)
     optimal_h.train(X, y)
     decision_boundaries(optimal_h, X, y, T_min)
+    plt.title('Descision for T=500 that minimizing the test err')
     plt.savefig('Q10')
     plt.show()
 
@@ -165,8 +165,8 @@ def Q18():
 
 
 if __name__ == '__main__':
-    # Q4()
-    # Q5()
-    # Q8()
+    Q4()
+    Q5()
+    Q8()
     Q9()
     Q10()
