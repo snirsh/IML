@@ -101,34 +101,34 @@ def Q5():
 
 
 def Q8():
+    X, y = generate_data(5000, 0)
+    h = AdaBoost(DecisionStump, 500)
+    h.train(X, y)
     training_err = np.zeros((500,))
     test_err = np.zeros((500,))
-    X, y = generate_data(5000, 0)
+    test_set, labels = generate_data(200, 0)
     for t in range(1, 501):
-        h = AdaBoost(DecisionStump, t)
-        h.train(X, y)
         training_err[t - 1] = h.error(X, y, t)
-        test_set, labels = generate_data(200, 0)
         test_err[t - 1] = h.error(test_set, labels, t)
     plt.plot(range(500), training_err, label='Training error')
     plt.plot(range(500), test_err, label='Test error')
     plt.title('question 8')
     plt.legend(loc='upper right')
     plt.xlabel('T')
-    plt.ylabel('Error')
+    plt.ylabel('Error rate')
     plt.savefig('Q8')
     plt.show()
 
 
 def Q9():
+    X, y = generate_data(5000, 0)
+    h = AdaBoost(DecisionStump, 500)
+    h.train(X, y)
     err = [0] * len(T)
-    X, y = generate_data(100, 0)
     i = 0
     for t in T:
         i += 1
         plt.subplot(3, 3, i, autoscale_on=True)
-        h = AdaBoost(DecisionStump, t)
-        h.train(X, y)
         err[i - 1] = h.error(X, y, t)
         decision_boundaries(h, X, y, t)
     plt.savefig('Q9')
@@ -143,7 +143,7 @@ def Q10():
     T_min = T[i]
     optimal_h = AdaBoost(DecisionStump, T_min)
     optimal_h.train(X, y)
-    decision_boundaries(optimal_h, X, y)
+    decision_boundaries(optimal_h, X, y, T_min)
     plt.savefig('Q10')
     plt.show()
 
@@ -165,8 +165,8 @@ def Q18():
 
 
 if __name__ == '__main__':
-    Q4()
-    Q5()
-    Q8()
+    # Q4()
+    # Q5()
+    # Q8()
     Q9()
     Q10()
