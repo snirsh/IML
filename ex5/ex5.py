@@ -15,9 +15,16 @@ def warmup():
     plt.show()
 
 
-def q7():
-    pass
+def q7_a():
+    s1 = np.random.normal((1, 1), id_2)
+    s2 = np.random.normal((-1, -1), id_2)
+    count, bins, ignored = plt.hist(s1, 30, density=True)
+    # count, bins, ignored = plt.hist(s2, 30, density=True)
+    # plt.plot(s1)
+    # plt.plot(s2)
+    plt.show()
 
 
 if __name__ == '__main__':
     warmup()
+    q7_a()
