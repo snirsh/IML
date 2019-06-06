@@ -16,9 +16,10 @@ def warmup():
 
 
 def q7_a():
-    s1 = np.random.normal((1, 1), id_2)
-    s2 = np.random.normal((-1, -1), id_2)
-    count, bins, ignored = plt.hist(s1, 30, density=True)
+    s1 = np.random.multivariate_normal((1, 1), id_2, 1000)
+    s2 = np.random.multivariate_normal((-1, -1), id_2, 1000)
+    plt.hist(s1, 30)#, density=True)
+    plt.hist(s2, 30)#, density=True)
     # count, bins, ignored = plt.hist(s2, 30, density=True)
     # plt.plot(s1)
     # plt.plot(s2)
@@ -26,5 +27,5 @@ def q7_a():
 
 
 if __name__ == '__main__':
-    warmup()
+    # warmup()
     q7_a()
